@@ -1,0 +1,11 @@
+Flask
+Werkzeug
+google-cloud-documentai
+google-cloud-firestore
+google-cloud-storage
+google-auth
+openpyxl
+python-dotenv
+bcrypt
+beautifulsoup4
+gunicorn

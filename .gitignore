@@ -1,0 +1,28 @@
+# Ignore environment variables
+.env
+
+# Ignore Node.js modules
+node_modules/
+
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore custom environment directory
+myenv/
+
+# Ignore logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore Mac OS generated files
+.DS_Store
+
+# Ignore build output
+dist/
+build/
+
+# Ignore temporary files
+*.tmp
+*.temp
