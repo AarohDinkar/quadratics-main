@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Quadratics.ai</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+
+    <!-- Meta Description -->
+    <meta name="description" content="Quadratics.ai - Instantly convert Single Line Diagrams to BOM with our advanced analyzer.">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Quadratics.ai - Circuit Diagram Analyzer">
+    <meta property="og:description" content="Instantly convert Single Line Diagrams to BOM with our advanced analyzer.">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.png') }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <link href="{{ url_for('static', filename='css/tailwind-output.css') }}" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom Font */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            color: #FF4D4D; /* A more vibrant red for error messages */
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Added text shadow for better readability */
+        }
+
+        /* Header Styling */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1D4ED8;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .header-title:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Improved Login Box Styling */
+        .login-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 3.5rem; /* Slightly more padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+            width: 90%;
+            max-width: 450px; /* Slightly wider box */
+            transform: scale(0.97);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(12px); /* Increased blur */
+        }
+
+        .login-box:hover {
+            transform: scale(1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); /* More dramatic hover effect */
+        }
+
+        .login-box h2 {
+            font-size: 2.5rem; /* Even larger heading */
+            margin-bottom: 2.25rem; /* Increased spacing below heading */
+            color: #2563EB; /* Tailwind's blue-600 - Slightly darker */
+            text-align: center;
+            letter-spacing: 0.025rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .input-field {
+            position: relative;
+            margin-bottom: 1.75rem; /* More space between input fields */
+        }
+
+         .input-field svg {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.3rem; /* Slightly larger icons */
+            height: 1.3rem;
+            color: #6B7280;
+            opacity: 0.8;
+            transition: color 0.3s ease, opacity 0.3s ease;
+        }
+
+        .input-field:focus-within svg {
+            color: #2563EB; /* Change color on focus */
+            opacity: 1;
+        }
+
+
+        .input-field input {
+            padding-left: 2.75rem;
+            padding-right: 1rem; /* Slightly more padding on the right */
+            border: 2px solid #CBD5E0; /* Tailwind's gray-300 - slightly muted */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .input-field input:focus {
+            border-color: #2563EB; /* Tailwind's blue-600 */
+            outline: none;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+         .password-toggle {
+              position: absolute;
+              right: 1rem;
+              top: 50%;
+              transform: translateY(-50%);
+              cursor: pointer;
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: #6B7280;
+              padding: 0.25rem 0.5rem;
+               border-radius: 0.375rem;
+                transition: color 0.3s ease;
+              user-select: none;
+           }
+
+
+            .password-container:focus-within .password-toggle {
+            color: #2563EB;
+             background-color: rgba(37, 99, 235, 0.1)
+            }
+             .password-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            }
+
+        .button-primary {
+            background: #2563EB; /* Tailwind's blue-600 - Slightly darker */
+            color: white;
+            padding: 1.1rem 1.5rem;
+            border-radius: 0.8rem;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .button-primary:hover {
+            background: #1E3A8A; /* Darker blue on hover */
+            transform: scale(1.03);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-primary:focus {
+            outline: none;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-purple-100 via-blue-100 to-blue-200 min-h-screen flex flex-col items-center justify-center px-4">
+
+<!-- Header -->
+<div class="header">
+    <span class="header-title" onclick="window.location.reload();">Quadratics AI</span>
+</div>
+
+<!-- Login Box -->
+<div class="login-box animate-fade-in">
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-700">Login</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div id="flash-messages" class="mb-4 space-y-2">
+        {% for category, message in messages %}
+        {% if category == 'error' or category == 'login_success' or category == 'logout_success' %}
+        <div class="px-4 py-2 rounded shadow-lg text-white
+          {% if category == 'login_success' %}
+            bg-green-500
+          {% elif category == 'logout_success' %}
+            bg-blue-500
+          {% elif category == 'error' %}
+            bg-red-500
+          {% endif %}
+        ">
+            {{ message }}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <script>
+        // Automatically hide flash messages after 5 seconds
+        setTimeout(() => {
+            const flashContainer = document.getElementById('flash-messages');
+            if (flashContainer) {
+                flashContainer.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="input-field">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    class="w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Username"
+            />
+        </div>
+        <div class="input-field password-container">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    class="w-full px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Password"
+            />
+              <span class="password-toggle" id="password-toggle">Show</span>
+        </div>
+        <button
+                type="submit"
+                class="button-primary w-full"
+        >
+            Login
+        </button>
+    </form>
+</div>
+<script>
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('password-toggle');
+
+    passwordToggle.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordToggle.textContent = 'Hide';
+        } else {
+            passwordInput.type = 'password';
+           passwordToggle.textContent = 'Show';
+        }
+    });
+</script>
+</body>
+</html>
